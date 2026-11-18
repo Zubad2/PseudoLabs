@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PseudoLab</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="desk">
+      <header class="masthead">
+        <h1>PseudoLab</h1>
+        <p>
+          A pseudocode workshop for Cambridge IGCSE and O Level Computer Science
+          (2210)
+        </p>
+      </header>
+
+      <main class="layout">
+        <section class="win" aria-label="Editor">
+          <div class="titlebar">Editor - program.psc</div>
+          <div class="toolbar">
+            <button id="run" class="go">Run</button>
+            <button id="next" disabled title="Next step (F10)">Next</button>
+            <button id="stop" disabled>Stop</button>
+            <label for="speed">Speed</label>
+            <select id="speed">
+              <option value="0">Instant</option>
+              <option value="60">Animate fast</option>
+              <option value="350">Animate slow</option>
+              <option value="step">Step by step</option>
+            </select>
+            <button id="arrow" title="Insert the assignment arrow">←</button>
+          </div>
+          <div class="toolbar tight">
+            <button id="new">New</button>
+            <button id="open">Open</button>
+            <button id="save">Save</button>
+            <label for="ex">Examples</label>
+            <select id="ex"></select>
+            <input id="file" type="file" accept=".psc,.txt" hidden />
+          </div>
+          <div class="editor">
+            <pre class="gutter" id="gutter" aria-hidden="true"></pre>
+            <div class="codebox">
+              <div class="curline" id="curline" hidden></div>
+              <pre class="hl" id="hl" aria-hidden="true"></pre>
+              <textarea
+                id="code"
+                spellcheck="false"
+                aria-label="Pseudocode editor"
+              ></textarea>
+            </div>
+          </div>
+          <div class="field">
+            <label for="auto">Auto-inputs</label>
+            <input
+              id="auto"
+              placeholder="Comma separated values for INPUT, used in order"
+            />
+          </div>
+          <div class="statusbar">
+            <span id="pos">Ln 1, Col 1</span>
+            <span id="status">Ready</span>
+          </div>
+        </section>
+
+        <section class="win" aria-label="Workbench">
+          <div class="titlebar">Workbench</div>
+          <div class="tabs" role="tablist">
+            <button class="on" data-t="c" role="tab">Console</button>
+            <button data-t="v" role="tab">Variables</button>
+            <button id="tt" data-t="t" role="tab">Trace table</button>
+            <button data-t="g" role="tab">Graphics</button>
+            <button data-t="f" role="tab">Flowchart</button>
+            <button data-t="p" role="tab">Convert</button>
+            <button data-t="a" role="tab">Generator</button>
+            <button data-t="m" role="tab">Beginner's guide</button>
+          </div>
+
+          <div class="pane" data-t="c">
+            <pre id="out" class="crt"></pre>
+            <div id="inrow" class="inrow" hidden>
+              <input
+                id="inp"
+                placeholder="Type a value, press Enter"
+                aria-label="Program input"
+              />
+              <button id="go">Enter</button>
+            </div>
+          </div>
+
+          <div class="pane hid" data-t="v">
+            <p class="note">
+              Global variables and arrays. Updated on every line in the animated
+              and step modes.
+            </p>
+            <div class="scroll" id="vars"></div>
+          </div>
+
+          <div class="pane hid" data-t="t">
+            <p class="note">
+              One row for every assignment, input and output, in the style of an
+              exam trace table.
+            </p>
+            <div class="scroll" id="tbl"></div>
+          </div>
+
+          <div class="pane hid" data-t="g">
+            <p class="note">
+              Drawn by CANVAS, COLOUR, LINE, RECT, CIRCLE, TEXT and the other
+              graphics commands.
+            </p>
+            <div class="scroll">
+              <canvas id="gfx" width="480" height="320"></canvas>
+            </div>
+            <div class="toolbar"><button id="dlgfx">Download PNG</button></div>
+          </div>
+
+          <div class="pane hid" data-t="f">
+            <div class="toolbar">
+              <button id="mkflow" class="go">Generate from editor</button>
+              <button id="dlflow">Download PNG</button>
+              <span class="note" id="flowmsg"></span>
+            </div>
+            <div class="scroll tall">
+              <canvas id="flow" width="1" height="1"></canvas>
+            </div>
+          </div>
+
+          <div class="pane hid" data-t="p">
+            <div class="toolbar">
+              <label for="cvdir">Direction</label>
+              <select id="cvdir">
+                <option value="py">Python to Pseudocode</option>
+                <option value="ps">Pseudocode to Python</option>
+              </select>
+              <label for="cvsample">Sample</label>
+              <select id="cvsample"></select>
+              <button id="cvfrom" title="Load the program from the editor">From editor</button>
+            </div>
+            <div class="cvhead" id="cvsrchead">Python</div>
+            <div class="editor cvedit" id="cvedit">
+              <pre class="gutter" id="cvgut" aria-hidden="true"></pre>
+              <div class="codebox">
+                <pre class="hl" id="cvhl" aria-hidden="true"></pre>
+                <textarea id="cvsrc" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Code to convert"></textarea>
+              </div>
+            </div>
+            <div id="cvview" class="cvcode hid" aria-live="off"></div>
+            <div class="toolbar">
+              <button id="cvgo" class="go">Convert</button>
+              <button id="cvanim">Animate</button>
+              <button id="cvpause" disabled>Pause</button>
+              <button id="cvnext" disabled>Next</button>
+              <button id="cvfinish" disabled>Finish</button>
+              <label for="cvspeed">Speed</label>
+              <select id="cvspeed">
+                <option value="500">Fast</option>
+                <option value="1400" selected>Medium</option>
+                <option value="2600">Slow</option>
+                <option value="step">Step by step</option>
+              </select>
+              <label class="cvopt"><input type="checkbox" id="cvopt" checked /><span id="cvoptl">Exam syntax only</span></label>
+            </div>
+            <div class="cvhead" id="cvouthead">Pseudocode</div>
+            <div id="cvout" class="cvcode" aria-label="Converted code"></div>
+            <p class="cvnote" id="cvnote">Pick a sample or paste your own code, then press Convert or Animate.</p>
+            <ul class="cvwarn" id="cvwarn"></ul>
+            <div class="toolbar">
+              <button id="cvcopy">Copy</button>
+              <button id="cvuse">Use in editor</button>
+              <button id="cvsave">Save file</button>
+            </div>
+          </div>
+
+          <div class="pane hid" data-t="a">
+            <div class="form">
+              <label for="algo">Algorithm</label>
+              <select id="algo"></select>
+              <p class="note" id="algodesc"></p>
+              <div id="params" class="params"></div>
+              <div class="toolbar">
+                <button id="gen">Insert into editor</button>
+                <button id="genrun" class="go">Insert and run</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pane hid guide" data-t="m" id="pg"></div>
+        </section>
+      </main>
+
+      <footer class="colophon">Developed by Zubad</footer>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/lexer.js"></script>
+    <script src="js/parser.js"></script>
+    <script src="js/interpreter.js"></script>
+    <script src="js/builtins.js"></script>
+    <script src="js/graphics.js"></script>
+    <script src="js/flowchart.js"></script>
+    <script src="js/trace.js"></script>
+    <script src="js/highlight.js"></script>
+    <script src="js/names.js"></script>
+    <script src="js/pyparse.js"></script>
+    <script src="js/py2pseudo.js"></script>
+    <script src="js/pseudo2py.js"></script>
+    <script src="js/algorithms.js"></script>
+    <script src="js/examples.js"></script>
+    <script src="js/manual.js"></script>
+    <script src="js/pysamples.js"></script>
+    <script src="js/convert.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
